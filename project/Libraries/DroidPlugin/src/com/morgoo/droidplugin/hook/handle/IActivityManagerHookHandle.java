@@ -184,7 +184,7 @@ public class IActivityManagerHookHandle extends BaseHookHandle {
 
                         String callingPackage = (String) args[1];
                         if (TextUtils.equals(mHostContext.getPackageName(), callingPackage)) {
-                            newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                            if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && activityInfo.launchMode == ActivityInfo.LAUNCH_MULTIPLE) {
 //                                newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
 //                            }
