@@ -1,127 +1,67 @@
-Droid Plugin
-======
+### 360DroidPlugin 产品介绍
 
-[中文文档](readme_cn.md "中文文档")
+#### 官方网站
+[https://droidplugin.360.cn/](https://droidplugin.360.cn/)
 
-DroidPlugin is a new **Plugin Framework** developed and maintained by the Android app-store team at Qihoo 360 (NYSE:QIHU).
-It enables the host app run any third-party apk without installation, modification and repackage, which benefit a lot for collaborative development on Android.
+#### 产品概述
+360DroidPlugin 是基于 360 核心安卓沙箱引擎技术，支持安卓应用程序在沙箱虚拟引擎内部运行的“轻量级安卓虚拟机”。对于引擎内部运行的应用，360DroidPlugin 有着极高的权限。所有应用的运行、安装、卸载、消息处理、文件存储等操作都可以通过 360DroidPlugin 统一管理。
 
--------
+#### 产品优势
+- **适配性好**：适配市面主流厂商操作系统及安卓版本。
+- **功能强大**：便于企业利用此技术，对自身业务进行提效和创新。
+- **应用广泛**：分身多开、游戏盒子、游戏手柄、隐私安全、政企安全、视频美颜等业务领域。
+- **优点显著**：运行稳定、兼容性好、Hook 能力强、扩展功能丰富。
 
+#### 主要功能
+1. **双开/多开需求**
+   - 支持在同一部手机上安装多个微信/QQ/WhatsApp/Facebook 等应用，实现一部手机，多个账号同时登录。
 
-
-##Problems to be solved:
-    
- 1. Unable to send `Notification` with custom Resources，eg：
- 
-     a.  Notification with custom RemoteLayout, which means `Notification`'s `contentView`，`tickerView`，
-     `bigContentView` and `headsUpContentView` must be null.
-
-     b.  Notification with icon customized by R.drawable.XXX. The framework will transform it to Bitmap instead.
-
- 2. Unable to define specified `Intent Filter` for the plugged app's `Service`、`Activity`、`BroadcastReceiver`
- and `ContentProvider`. So the plugged app is invisible for the outside system and app.
-
- 3. Lack of `Hook` to the `Native` layer, thus apk (e.g. a majority of game apps) with `native` code cannot be loaded as plugin.
-    
-##Features：
-  1. Compatible to Android 2.3 and later versions
-  2. Given its .apk file, the plugged app could be run either independently or as plugin of the host, **NO** source code needed.
-  3. Unnecessary to register the plugged app's `Service`、`Activity`、`BroadcastReceiver`、`ContentProvider` in the host.
-  4. The plugged app are recognized as *Installed* by the host and other plugged apps
-  5. Very low level of code invasion, in deed just one line code to integrate DroidPlugin into the host app.
-  6. Complete code level separation between host and plugged apps, only system level message passing method provide by Android allowed.
-  7. All system API supported
-  8. Resources management are also completely separated between host and plugged apps.
-  9. Process management for plugged apps, idle processed of the plugged app will be timely recycled to guarantee minimum memory usage.
-  10. Static broadcast of plugged app will be treated as dynamic, thus the static broadcasting will never be trigger if
-  the plugged app are not activated.
-    
-##Usage：
-
-####Integrate with the host apps
-
-It is very simple integrate Droid Plugin to your proejct：
-
-1. Import Droid Plugin project to your project as a lib.
-
-2. Include following attributes in host's `AndroidManifest.xml`：
-	
-		<application android:name="com.morgoo.droidplugin.PluginApplication" 
-			android:label="@string/app_name"
-			android:icon="@drawable/ic_launcher" >
-
-           
-3. Or, if you use customized `Application`，add following code in the methods `onCreate` and `attachBaseContext`:
-    
-		@Override
-		public void onCreate() {
-			super.onCreate();
-			PluginHelper.getInstance().applicationOnCreate(getBaseContext()); //must behind super.onCreate()
-		}
-        
-		@Override
-		protected void attachBaseContext(Context base) {
-			PluginHelper.getInstance().applicationAttachBaseContext(base);
-            super.attachBaseContext(base);
-		}
-
-4.  **All**  `provider`'s `authorities` value in DroidPlugin's `Libraries\DroidPlugin\AndroidManifest.xml`
- default to be `com.morgoo.droidplugin_stub_P00`, e.g. :
-
-		<provider
-				android:name="com.morgoo.droidplugin.stub.ContentProviderStub$StubP00"
-				android:authorities="com.morgoo.droidplugin_stub_P00"
-				android:exported="false"
-				android:label="@string/stub_name_povider" />
-
-	You'd better change it to avoid conflict with other instances, e.g.:
-		
-		<provider
-				android:name="com.morgoo.droidplugin.stub.ContentProviderStub$StubP00"
-				android:authorities="com.example.droidplugin_stub_P00"
-				android:exported="false"
-				android:label="@string/stub_name_povider" />
-    and change ```PluginManager.STUB_AUTHORITY_NAME``` to your value:
-
-		PluginManager.STUB_AUTHORITY_NAME="com.example.droidplugin_stub"
-
-
-####Install、Uninstall or Upgrade the plugged app：
-
-1. **Install/Upgrade**, use this method：
- 
-		int PluginManager.getInstance().installPackage(String filepath, int flags);
+2. **移动安全需求**
+   - 提供内部与外部的隔离机制，包括文件隔离、组件隔离、进程通讯隔离，实现工作事务与个人事务的安全隔离。
    
-	For installation, `filepath` set to path of the .apk file, and `flags` set to 0.
+   **具体功能**
+   - **应用行为审计**：实时监测用户使用行为，违规信息上传服务器，实现时间围栏、地理围栏、敏感关键字过滤拦截等功能。
+   - **数据加密**：对应用的全部数据/文件加密，保证数据/文件安全。
+   - **数据采集**：实现应用数据的实时无感上传需求，如聊天记录、转账记录等，防止事后删除无法追溯。
+   - **数据防泄漏**：实现应用防复制/粘贴、防截屏/录屏、防分享/转发、水印溯源等需求。
+   - **防攻击泄密**：控制 APP 获取短信/通讯录/通话记录/后台录音/后台拍照/浏览历史/位置信息等隐私行为，防止木马/恶意 APP 获取用户隐私数据。
 
-	For upgrade, `filepath` set to path of the .apk file, and  `flags` set to `PackageManagerCompat.INSTALL_REPLACE_EXISTING`.
-        
-    
-2. **Uninstall**, use this method：
+3. **免 ROOT HOOK 需求**
+   - 提供 Java 和 Native 的 Hook 能力，实现 APP 监控管理、移动安全等功能需求。
 
-		int PluginManager.getInstance().deletePackage(String packageName,int flags);
+4. **APP 静默安装需求**
+   - 提供 APP 静默安装、静默升级、静默卸载能力，实现应用商店或游戏中心下载后立即安装，提升用户体验。
 
-	`packageName` is package name of the plugged app，`flags = 0`。
+5. **APP 管控需求**
+   - 掌握 APP 访问系统 API、敏感数据、设备信息等情况（如APP是否访问了联系人，相册，通话记录，是否访问了用户的地理位置等信息），并控制或构造自定义信息。获取 APP 私有数据，如聊天数据库等，实现对 APP 行为的全面控制。
 
-3. **Activate**
+6. **其他需求**
+   - 对于内部的 APP 具有完全的监管和控制能力，几乎能满足一切需求。
 
-    Just use android's API, same for communication between components.
-	
-## FAQ
-	
- [FAQ](https://github.com/Qihoo360/DroidPlugin/wiki/FAQ "FAQ")
-	
-## Remark：
+#### 版本更新（2024年3月上旬）
+- 适配安卓 14 高版本
+- 解决鸿蒙 4.0 版本微信适配问题
+- 解决部分应用检测运行环境问题
+- 支持抖音小程序
+- 解决 Unity 32 位游戏运行问题
+- 提升相册读取速度
+- 增加外部应用是否可见能力
+- 增加文件和包名分身相互覆盖安装能力
+- 增加传输扩展数据
+- 增加跨应用登录 API
+- 支持沙箱内应用安装第三方应用
+- 适配画中画功能
+- 支持多款加固方案
 
-Please feel free to [report bugs](https://github.com/Qihoo360/DroidPlugin/issues) or ask for help via email.
-QQ Group:318901026
+#### 游戏能力升级（2024年）
+- **统一登录/实名制**：平台一键授权游戏登录/实名信息。
+- **游戏变速**：卡牌/回合制游戏加速，任务轻松高效完成。
+- **游戏双开**：助力小号养成，多账号随时切换。
+- **悬浮窗**：提供游戏变速、截屏录屏、游戏社区等内容。
+- **游戏时长统计**：提供用户专属数据，打造成就系统。
+- **游戏引擎升级**：支持谷歌、网易等游戏适配。
+- **GMS**：支持谷歌套件，实现登录支付等能力。
+- **广告 SDK**：定制化广告 SDK 高效快速变现。
 
-##Who is using Droid Plugin?
-	
- [360 App Store](http://sj.360.cn "360 App Store")
-
-    
-### Thanks：
-    
-    Translated by Ming Song（gnosoir@hotmail.com）    
+#### 官方网站
+[https://droidplugin.360.cn/](https://droidplugin.360.cn/)
